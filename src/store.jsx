@@ -162,3 +162,38 @@ export function farmCheck(state, tpId, hybridId) {
   const assigned = sel.reduce((s, f) => s + (state.farms.values[tpId]?.[f]?.[hybridId] || 0), 0)
   return { total, assigned, diff: total - assigned }
 }
+
+// Расширенный статус заполнения: approved / review / progress (в работе) / empty (не начато).
+// Нужен, чтобы КД одним взглядом видел, что готово, что ждёт его, а что ещё не трогали.
+export function regionDistStatus(state, regionId) {
+  const s = state.tpPlans.status[regionId]
+  if (s === 'approved' || s === 'review') return s
+  const assigned = selectedHybrids(state).reduce((sum, h) => sum + tpCheck(state, regionId, h.id).assigned, 0)
+  return assigned > 0 ? 'progress' : 'empty'
+}
+
+export function tpDistStatus(state, tpId) {
+  const s = state.farms.status[tpId] || 'draft'
+  if (s === 'approved' || s === 'review') return s
+  const sel = state.farms.selection[tpId] || []
+  const assigned = sel.reduce(
+    (sum, f) => sum + selectedHybrids(state).reduce((ss, h) => ss + (state.farms.values[tpId]?.[f]?.[h.id] || 0), 0),
+    0,
+  )
+  return assigned > 0 ? 'progress' : 'empty'
+}
+
+// Свод по категориям заполнения — для строки-сводки.
+export const tally = (items, fn) =>
+  items.reduce(
+    (acc, it) => {
+      acc[fn(it)] = (acc[fn(it)] || 0) + 1
+      return acc
+    },
+    { approved: 0, review: 0, progress: 0, empty: 0 },
+  )
+
+// Сколько ждёт согласования КД (для бейджей на навигации)
+export const regionsAwaiting = (state) => REGIONS.filter((r) => state.tpPlans.status[r.id] === 'review').length
+export const tpsAwaiting = (state) =>
+  TPS.filter((t) => (state.farms.status[t.id] || 'draft') === 'review').length

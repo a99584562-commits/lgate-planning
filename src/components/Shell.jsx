@@ -1,6 +1,6 @@
-import { useStore } from '../store.jsx'
+import { useStore, regionsAwaiting, tpsAwaiting } from '../store.jsx'
 import { FY, ROLES } from '../data/seed.js'
-import { Check } from './ui.jsx'
+import { Check, CountBadge } from './ui.jsx'
 
 const STEPS = [
   { id: 'hybrids', n: 1, label: 'Гибриды' },
@@ -30,6 +30,9 @@ export default function Shell({ children }) {
   const { state, dispatch } = useStore()
   const allowed = roleSteps(state.role)
   const role = ROLES.find((r) => r.id === state.role)
+  // КД — согласующий: показываем, сколько регионов/ТП ждёт его прямо на навигации
+  const isBoss = state.role === 'cd'
+  const awaiting = { tp: isBoss ? regionsAwaiting(state) : 0, farms: isBoss ? tpsAwaiting(state) : 0 }
 
   return (
     <div className="min-h-screen pb-20">
@@ -101,6 +104,7 @@ export default function Shell({ children }) {
                   {done ? <Check className="h-3 w-3" /> : s.n}
                 </span>
                 {s.label}
+                <CountBadge n={awaiting[s.id]} />
                 {active && <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-leaf-700" />}
               </button>
             )

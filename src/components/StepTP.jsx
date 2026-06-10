@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useStore, selectedHybrids, tpCheck } from '../store.jsx'
+import { useStore, selectedHybrids, tpCheck, regionDistStatus, tally } from '../store.jsx'
 import { REGIONS, TPS, ROLES } from '../data/seed.js'
-import { Btn, Card, StatusChip, NumCell, fmt, Balance, ProgressBar } from './ui.jsx'
+import { Btn, Card, StatusChip, NumCell, fmt, Balance, ProgressBar, Dot, DistSummary, DIST } from './ui.jsx'
 
 // Шаг 3. Разнесение плана региона по торговым представителям (зона РОП).
 // Сверка сумм — живая, прямо в таблице, без второй вкладки с канбаном.
@@ -67,17 +67,36 @@ export default function StepTP() {
       </div>
 
       {!isRop && (
-        <div className="flex gap-1.5">
-          {REGIONS.map((r) => (
-            <button
-              key={r.id}
-              onClick={() => setPicked(r.id)}
-              className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors
-                ${r.id === regionId ? 'border-leaf-800 bg-leaf-800 text-white' : 'border-line bg-white text-ink-500 hover:border-ink-300'}`}
-            >
-              {r.name}
-            </button>
-          ))}
+        <Card className="space-y-3 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="text-xs font-semibold uppercase tracking-wide text-ink-400">Регионы · статус разнесения</span>
+            <DistSummary counts={tally(REGIONS, (r) => regionDistStatus(state, r.id))} />
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {REGIONS.map((r) => {
+              const ds = regionDistStatus(state, r.id)
+              const sel = r.id === regionId
+              return (
+                <button
+                  key={r.id}
+                  onClick={() => setPicked(r.id)}
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors
+                    ${sel ? 'border-leaf-800 bg-leaf-800 text-white' : 'border-line bg-white text-ink-500 hover:border-ink-300'}
+                    ${!sel && ds === 'review' ? 'ring-2 ring-amber-200' : ''}`}
+                >
+                  <Dot kind={ds} className={`h-2 w-2 ${sel ? 'ring-2 ring-white/40' : ''}`} />
+                  {r.name}
+                </button>
+              )
+            })}
+          </div>
+        </Card>
+      )}
+
+      {isBoss && !isRop && status === 'review' && (
+        <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-800">
+          <Dot kind="review" />
+          Регион «{region.name}» ждёт вашего согласования — проверьте цифры и утвердите справа вверху.
         </div>
       )}
 

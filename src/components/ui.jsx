@@ -84,6 +84,47 @@ export function Balance({ total, assigned }) {
   )
 }
 
+// Палитра статусов заполнения — общая для точек, сводки и бейджей.
+export const DIST = {
+  review: { dot: 'bg-amber-400', text: 'text-amber-700', ring: 'ring-amber-200', label: 'Ждут согласования' },
+  approved: { dot: 'bg-leaf-500', text: 'text-leaf-700', ring: 'ring-leaf-200', label: 'Утверждено' },
+  progress: { dot: 'bg-sky-400', text: 'text-sky-700', ring: 'ring-sky-200', label: 'В работе' },
+  empty: { dot: 'bg-stone-300', text: 'text-ink-400', ring: 'ring-stone-200', label: 'Не начато' },
+}
+
+export function Dot({ kind, className = 'h-2 w-2' }) {
+  return <span className={`inline-block shrink-0 rounded-full ${DIST[kind].dot} ${className}`} />
+}
+
+// Строка-сводка: «● Ждут согласования 1  ● Утверждено 2 …». Нулевые категории приглушены.
+export function DistSummary({ counts }) {
+  const order = ['review', 'progress', 'approved', 'empty']
+  return (
+    <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+      {order.map((k) => (
+        <span
+          key={k}
+          className={`inline-flex items-center gap-2 text-sm font-semibold ${counts[k] ? DIST[k].text : 'text-ink-300'}`}
+        >
+          <Dot kind={k} className={`h-2.5 w-2.5 ${counts[k] ? '' : 'opacity-40'}`} />
+          {DIST[k].label}
+          <span className="num tabular-nums">{counts[k]}</span>
+        </span>
+      ))}
+    </div>
+  )
+}
+
+// Янтарный бейдж-счётчик для навигации («ждёт согласования»)
+export function CountBadge({ n }) {
+  if (!n) return null
+  return (
+    <span className="num ml-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-400 px-1.5 text-[11px] font-bold text-amber-950">
+      {n}
+    </span>
+  )
+}
+
 export function ProgressBar({ total, assigned }) {
   const pct = total > 0 ? Math.min(100, Math.round((assigned / total) * 100)) : 0
   const over = assigned > total

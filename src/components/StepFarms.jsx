@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useStore, selectedHybrids, farmCheck, tpById, farmById } from '../store.jsx'
+import { useStore, selectedHybrids, farmCheck, tpById, farmById, tpDistStatus, tally } from '../store.jsx'
 import { FARMS, TPS, ROLES } from '../data/seed.js'
-import { Btn, Card, StatusChip, NumCell, fmt, Balance, ProgressBar, Check } from './ui.jsx'
+import { Btn, Card, StatusChip, NumCell, fmt, Balance, ProgressBar, Check, Dot, DistSummary } from './ui.jsx'
 
 // Шаг 4. План ТП → конечные потребители (хозяйства).
 // В Б24: фильтр в справочнике компаний + «Умный сценарий» + карточки по хозяйствам.
@@ -66,17 +66,39 @@ export default function StepFarms() {
       </div>
 
       {!isTp && (
-        <div className="flex flex-wrap gap-1.5">
-          {tpsWithPlans.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setPicked(t.id)}
-              className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors
-                ${t.id === tpId ? 'border-leaf-800 bg-leaf-800 text-white' : 'border-line bg-white text-ink-500 hover:border-ink-300'}`}
-            >
-              {t.name} <span className="opacity-60">· {t.region === 'yug' ? 'Юг' : t.region === 'ural' ? 'Урал' : 'Волга-Дон'}</span>
-            </button>
-          ))}
+        <Card className="space-y-3 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="text-xs font-semibold uppercase tracking-wide text-ink-400">
+              Торговые представители · статус
+            </span>
+            <DistSummary counts={tally(tpsWithPlans, (t) => tpDistStatus(state, t.id))} />
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {tpsWithPlans.map((t) => {
+              const ds = tpDistStatus(state, t.id)
+              const sel = t.id === tpId
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setPicked(t.id)}
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors
+                    ${sel ? 'border-leaf-800 bg-leaf-800 text-white' : 'border-line bg-white text-ink-500 hover:border-ink-300'}
+                    ${!sel && ds === 'review' ? 'ring-2 ring-amber-200' : ''}`}
+                >
+                  <Dot kind={ds} className={`h-2 w-2 ${sel ? 'ring-2 ring-white/40' : ''}`} />
+                  {t.name}
+                  <span className="opacity-60">· {t.region === 'yug' ? 'Юг' : t.region === 'ural' ? 'Урал' : 'Волга-Дон'}</span>
+                </button>
+              )
+            })}
+          </div>
+        </Card>
+      )}
+
+      {isBoss && !isTp && status === 'review' && (
+        <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-800">
+          <Dot kind="review" />
+          {tp.name} отправил планы по хозяйствам на согласование — проверьте и утвердите справа вверху.
         </div>
       )}
 
