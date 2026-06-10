@@ -11,7 +11,7 @@ export default function StepDeals() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Сделки · воронка «Выполнение плана»</h1>
+        <h1 className="font-display text-3xl font-semibold uppercase tracking-tight">Сделки · воронка «Выполнение плана»</h1>
         <p className="mt-1 text-sm text-ink-500">
           Создаются автоматически при утверждении планов по хозяйствам — по одной на пару «хозяйство × гибрид».
         </p>
@@ -24,11 +24,11 @@ export default function StepDeals() {
         </Card>
         <Card className="p-5">
           <div className="text-xs font-semibold uppercase tracking-wide text-ink-400">Суммарный план</div>
-          <div className="num mt-1 text-3xl font-extrabold text-leaf-800">{fmt(total)} <span className="text-sm font-semibold text-ink-400">п.е.</span></div>
+          <div className="num mt-1 text-3xl font-extrabold text-brand-600">{fmt(total)} <span className="text-sm font-semibold text-ink-400">п.е.</span></div>
         </Card>
         <Card className="p-5">
           <div className="text-xs font-semibold uppercase tracking-wide text-ink-400">Стадия</div>
-          <div className="mt-2 inline-flex rounded-full bg-leaf-50 px-3 py-1 text-sm font-bold text-leaf-800">
+          <div className="mt-2 inline-flex rounded-full bg-brand-50 px-3 py-1 text-sm font-bold text-brand-700">
             Выполнение плана
           </div>
         </Card>
@@ -66,7 +66,7 @@ export default function StepDeals() {
                     <td className="px-3 py-2.5 font-bold">{hybrid.name}</td>
                     <td className="px-3 py-2.5 text-ink-500">{tp.name}</td>
                     <td className="px-3 py-2.5 text-ink-500">{region.name}</td>
-                    <td className="num px-5 py-2.5 text-right font-extrabold text-leaf-800">{fmt(d.plan)}</td>
+                    <td className="num px-5 py-2.5 text-right font-extrabold text-ink-900">{fmt(d.plan)}</td>
                   </tr>
                 )
               })}

@@ -11,7 +11,12 @@ export default function StepTP() {
   const isRop = !!role.region
   const isBoss = state.role === 'cd'
   const [picked, setPicked] = useState(role.region || 'yug')
+  const [showAll, setShowAll] = useState(false)
   const regionId = isRop ? role.region : picked
+  const visibleRegions = showAll
+    ? REGIONS
+    : REGIONS.filter((r) => regionDistStatus(state, r.id) !== 'empty' || r.id === regionId)
+  const hiddenRegions = REGIONS.length - visibleRegions.length
   const region = REGIONS.find((r) => r.id === regionId)
   const hybrids = selectedHybrids(state).filter((h) => (state.regionPlans.values[h.id]?.[regionId] || 0) > 0)
   const tps = TPS.filter((t) => t.region === regionId)
@@ -34,7 +39,7 @@ export default function StepTP() {
     <div className="space-y-6">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">План на торговых представителей</h1>
+          <h1 className="font-display text-3xl font-semibold uppercase tracking-tight">План на торговых представителей</h1>
           <p className="mt-1 text-sm text-ink-500">
             {isRop
               ? `Ваш регион — ${region.name}. Разнесите план региона по своей команде.`
@@ -72,8 +77,8 @@ export default function StepTP() {
             <span className="text-xs font-semibold uppercase tracking-wide text-ink-400">Регионы · статус разнесения</span>
             <DistSummary counts={tally(REGIONS, (r) => regionDistStatus(state, r.id))} />
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {REGIONS.map((r) => {
+          <div className="flex flex-wrap items-center gap-1.5">
+            {visibleRegions.map((r) => {
               const ds = regionDistStatus(state, r.id)
               const sel = r.id === regionId
               return (
@@ -81,7 +86,7 @@ export default function StepTP() {
                   key={r.id}
                   onClick={() => setPicked(r.id)}
                   className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors
-                    ${sel ? 'border-leaf-800 bg-leaf-800 text-white' : 'border-line bg-white text-ink-500 hover:border-ink-300'}
+                    ${sel ? 'border-brand-500 bg-brand-500 text-white' : 'border-line bg-white text-ink-500 hover:border-ink-300'}
                     ${!sel && ds === 'review' ? 'ring-2 ring-amber-200' : ''}`}
                 >
                   <Dot kind={ds} className={`h-2 w-2 ${sel ? 'ring-2 ring-white/40' : ''}`} />
@@ -89,6 +94,14 @@ export default function StepTP() {
                 </button>
               )
             })}
+            {(hiddenRegions > 0 || showAll) && (
+              <button
+                onClick={() => setShowAll((v) => !v)}
+                className="rounded-full px-3 py-1.5 text-sm font-medium text-ink-400 hover:text-ink-700"
+              >
+                {showAll ? 'скрыть не начатые' : `+ ещё ${hiddenRegions} не начато`}
+              </button>
+            )}
           </div>
         </Card>
       )}
@@ -131,7 +144,7 @@ export default function StepTP() {
               return (
                 <tr key={h.id} className={i % 2 ? 'bg-paper/60' : ''}>
                   <td className="px-5 py-2 font-bold">{h.name}</td>
-                  <td className="num px-3 py-2 text-right font-extrabold text-leaf-800">{fmt(c.total)}</td>
+                  <td className="num px-3 py-2 text-right font-extrabold text-ink-900">{fmt(c.total)}</td>
                   {tps.map((t) => (
                     <td key={t.id} className="px-2 py-2 text-right">
                       <NumCell
@@ -151,7 +164,7 @@ export default function StepTP() {
                       {c.diff > 0 && (
                         <button
                           onClick={() => dispatch({ type: 'distributeTp', region: regionId, hybrid: h.id })}
-                          className="rounded-md px-2 py-1 text-xs font-semibold text-leaf-700 hover:bg-leaf-50"
+                          className="rounded-md px-2 py-1 text-xs font-semibold text-brand-600 hover:bg-brand-50"
                           title="Распределить остаток поровну по пустым ячейкам"
                         >
                           поровну

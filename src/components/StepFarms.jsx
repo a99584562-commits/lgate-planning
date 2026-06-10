@@ -14,7 +14,11 @@ export default function StepFarms() {
     selectedHybrids(state).some((h) => (state.tpPlans.values[t.region]?.[h.id]?.[t.id] || 0) > 0),
   )
   const [picked, setPicked] = useState(role.tp || 'shahov')
+  const [showAll, setShowAll] = useState(false)
   const tpId = isTp ? role.tp : picked
+  // по умолчанию прячем «не начато» — на экране только то, где есть работа
+  const visibleTps = showAll ? tpsWithPlans : tpsWithPlans.filter((t) => tpDistStatus(state, t.id) !== 'empty' || t.id === tpId)
+  const hiddenCount = tpsWithPlans.length - visibleTps.length
   const tp = tpById(tpId)
   const hybrids = selectedHybrids(state).filter((h) => (state.tpPlans.values[tp.region]?.[h.id]?.[tpId] || 0) > 0)
   const myFarms = FARMS.filter((f) => f.tp === tpId)
@@ -38,7 +42,7 @@ export default function StepFarms() {
     <div className="space-y-6">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">План по конечным потребителям</h1>
+          <h1 className="font-display text-3xl font-semibold uppercase tracking-tight">План по конечным потребителям</h1>
           <p className="mt-1 text-sm text-ink-500">
             {isTp
               ? 'Выберите свои хозяйства и разнесите личный план по гибридам.'
@@ -73,8 +77,8 @@ export default function StepFarms() {
             </span>
             <DistSummary counts={tally(tpsWithPlans, (t) => tpDistStatus(state, t.id))} />
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {tpsWithPlans.map((t) => {
+          <div className="flex flex-wrap items-center gap-1.5">
+            {visibleTps.map((t) => {
               const ds = tpDistStatus(state, t.id)
               const sel = t.id === tpId
               return (
@@ -82,7 +86,7 @@ export default function StepFarms() {
                   key={t.id}
                   onClick={() => setPicked(t.id)}
                   className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors
-                    ${sel ? 'border-leaf-800 bg-leaf-800 text-white' : 'border-line bg-white text-ink-500 hover:border-ink-300'}
+                    ${sel ? 'border-brand-500 bg-brand-500 text-white' : 'border-line bg-white text-ink-500 hover:border-ink-300'}
                     ${!sel && ds === 'review' ? 'ring-2 ring-amber-200' : ''}`}
                 >
                   <Dot kind={ds} className={`h-2 w-2 ${sel ? 'ring-2 ring-white/40' : ''}`} />
@@ -91,6 +95,14 @@ export default function StepFarms() {
                 </button>
               )
             })}
+            {(hiddenCount > 0 || showAll) && (
+              <button
+                onClick={() => setShowAll((v) => !v)}
+                className="rounded-full px-3 py-1.5 text-sm font-medium text-ink-400 hover:text-ink-700"
+              >
+                {showAll ? 'скрыть не начатые' : `+ ещё ${hiddenCount} не начато`}
+              </button>
+            )}
           </div>
         </Card>
       )}
@@ -115,14 +127,14 @@ export default function StepFarms() {
                   disabled={!editable}
                   onClick={() => dispatch({ type: 'toggleFarm', tp: tpId, farm: f.id })}
                   className={`w-full rounded-xl border px-3 py-2.5 text-left transition-colors
-                    ${on ? 'border-leaf-600 bg-leaf-50' : 'border-line bg-white hover:border-ink-300'}
+                    ${on ? 'border-brand-500 bg-brand-50' : 'border-line bg-white hover:border-ink-300'}
                     ${!editable ? 'cursor-default opacity-90' : ''}`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className={`text-sm font-semibold ${on ? 'text-leaf-900' : 'text-ink-700'}`}>{f.name}</span>
+                    <span className={`text-sm font-semibold ${on ? 'text-brand-900' : 'text-ink-700'}`}>{f.name}</span>
                     <span
                       className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border
-                        ${on ? 'border-leaf-600 bg-leaf-600 text-white' : 'border-line text-transparent'}`}
+                        ${on ? 'border-brand-500 bg-brand-500 text-white' : 'border-line text-transparent'}`}
                     >
                       <Check className="h-3 w-3" />
                     </span>
@@ -173,7 +185,7 @@ export default function StepFarms() {
                     return (
                       <tr key={h.id} className={i % 2 ? 'bg-paper/60' : ''}>
                         <td className="px-5 py-2 font-bold">{h.name}</td>
-                        <td className="num px-3 py-2 text-right font-extrabold text-leaf-800">{fmt(c.total)}</td>
+                        <td className="num px-3 py-2 text-right font-extrabold text-ink-900">{fmt(c.total)}</td>
                         {selection.map((fid) => (
                           <td key={fid} className="px-2 py-2 text-right">
                             <NumCell

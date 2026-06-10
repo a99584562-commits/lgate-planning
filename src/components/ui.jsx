@@ -18,9 +18,9 @@ export function StatusChip({ status }) {
 
 export function Btn({ children, kind = 'primary', className = '', ...props }) {
   const kinds = {
-    primary: 'bg-leaf-800 text-white hover:bg-leaf-700 disabled:bg-stone-200 disabled:text-stone-400',
+    primary: 'bg-brand-500 text-white hover:bg-brand-600 disabled:bg-stone-200 disabled:text-stone-400',
     ghost: 'border border-line bg-white text-ink-700 hover:border-ink-300 hover:text-ink-900',
-    subtle: 'text-leaf-700 hover:bg-leaf-50',
+    subtle: 'text-brand-600 hover:bg-brand-50',
   }
   return (
     <button
@@ -56,7 +56,7 @@ export function NumCell({ value, onChange, disabled, max }) {
       onChange={(e) => onChange(e.target.value)}
       className={`num h-9 w-24 rounded-lg border border-transparent bg-transparent px-2 text-right text-sm
         ${value ? 'text-ink-900 font-medium' : 'text-ink-300'}
-        ${disabled ? 'cursor-default' : 'hover:border-line focus:border-leaf-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-leaf-100'}`}
+        ${disabled ? 'cursor-default' : 'hover:border-line focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100'}`}
     />
   )
 }

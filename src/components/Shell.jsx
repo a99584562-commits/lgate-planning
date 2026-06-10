@@ -1,6 +1,7 @@
 import { useStore, regionsAwaiting, tpsAwaiting } from '../store.jsx'
 import { FY, ROLES } from '../data/seed.js'
 import { Check, CountBadge } from './ui.jsx'
+import BrandMark from './BrandMark.jsx'
 
 const STEPS = [
   { id: 'hybrids', n: 1, label: 'Гибриды' },
@@ -36,13 +37,16 @@ export default function Shell({ children }) {
 
   return (
     <div className="min-h-screen pb-20">
+      <div className="h-1 bg-brand-500" />
       <header className="border-b border-line bg-white">
         <div className="mx-auto flex max-w-6xl items-center gap-4 px-6 py-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-leaf-900 text-sm font-extrabold tracking-tight text-white">
-            LG
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500 p-2 text-white">
+            <BrandMark className="h-full w-full" />
           </div>
           <div className="mr-auto">
-            <div className="text-[15px] font-bold leading-tight">Планирование продаж</div>
+            <div className="font-display text-[17px] font-semibold uppercase leading-tight tracking-tight">
+              Планирование продаж
+            </div>
             <div className="text-xs text-ink-500">
               финансовый год <span className="num font-semibold text-ink-700">{FY}</span> · демо
             </div>
@@ -61,7 +65,7 @@ export default function Shell({ children }) {
                 if (confirm('Очистить все планы и пройти процесс с нуля? Демо-пример можно вернуть кнопкой рядом.'))
                   dispatch({ type: 'clear' })
               }}
-              className="border-l border-line px-3 py-1.5 text-xs font-semibold text-leaf-700 hover:bg-leaf-50"
+              className="border-l border-line px-3 py-1.5 text-xs font-semibold text-brand-600 hover:bg-brand-50"
               title="Пустое состояние — прогнать каскад с шага 1"
             >
               Чистый старт
@@ -95,17 +99,17 @@ export default function Shell({ children }) {
                 disabled={!enabled}
                 onClick={() => dispatch({ type: 'step', id: s.id })}
                 className={`relative flex items-center gap-2 px-4 py-3 text-sm transition-colors
-                  ${active ? 'font-bold text-leaf-800' : enabled ? 'font-medium text-ink-500 hover:text-ink-900' : 'font-medium text-ink-300'}`}
+                  ${active ? 'font-bold text-brand-600' : enabled ? 'font-medium text-ink-500 hover:text-ink-900' : 'font-medium text-ink-300'}`}
               >
                 <span
                   className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold
-                    ${done ? 'bg-leaf-600 text-white' : active ? 'bg-leaf-100 text-leaf-800' : 'bg-stone-100 text-ink-400'}`}
+                    ${done ? 'bg-leaf-600 text-white' : active ? 'bg-brand-100 text-brand-700' : 'bg-stone-100 text-ink-400'}`}
                 >
                   {done ? <Check className="h-3 w-3" /> : s.n}
                 </span>
                 {s.label}
                 <CountBadge n={awaiting[s.id]} />
-                {active && <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-leaf-700" />}
+                {active && <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-brand-500" />}
               </button>
             )
           })}
@@ -114,7 +118,7 @@ export default function Shell({ children }) {
 
       <div className="mx-auto max-w-6xl px-6 pt-8">
         <div className="mb-6 flex items-center gap-2 text-xs text-ink-400">
-          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-leaf-100 text-[10px] font-bold text-leaf-800">
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[10px] font-bold text-brand-700">
             {role.short}
           </span>
           Вы вошли как <span className="font-semibold text-ink-700">{role.person}</span> — {role.label}

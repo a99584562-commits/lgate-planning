@@ -13,7 +13,7 @@ export default function StepHybrids() {
     <div className="space-y-6">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">Выбор гибридов</h1>
+          <h1 className="font-display text-3xl font-semibold uppercase tracking-tight">Выбор гибридов</h1>
           <p className="mt-1 text-sm text-ink-500">
             Отметьте гибриды, по которым пойдёт планирование. Количества на этом шаге не нужны.
           </p>
@@ -50,13 +50,13 @@ export default function StepHybrids() {
                     disabled={approved}
                     onClick={() => dispatch({ type: 'toggleHybrid', id: h.id })}
                     className={`flex w-full items-center justify-between rounded-xl border px-3.5 py-2.5 text-sm font-semibold transition-colors
-                      ${on ? 'border-leaf-600 bg-leaf-50 text-leaf-900' : 'border-line bg-white text-ink-500 hover:border-ink-300'}
+                      ${on ? 'border-brand-500 bg-brand-50 text-brand-900' : 'border-line bg-white text-ink-500 hover:border-ink-300'}
                       ${approved ? 'cursor-default opacity-90' : ''}`}
                   >
                     {h.name}
                     <span
                       className={`flex h-5 w-5 items-center justify-center rounded-full border
-                        ${on ? 'border-leaf-600 bg-leaf-600 text-white' : 'border-line text-transparent'}`}
+                        ${on ? 'border-brand-500 bg-brand-500 text-white' : 'border-line text-transparent'}`}
                     >
                       <Check className="h-3 w-3" />
                     </span>

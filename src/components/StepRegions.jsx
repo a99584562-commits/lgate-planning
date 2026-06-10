@@ -14,7 +14,7 @@ export default function StepRegions() {
     <div className="space-y-6">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">План на регионы</h1>
+          <h1 className="font-display text-3xl font-semibold uppercase tracking-tight">План на регионы</h1>
           <p className="mt-1 text-sm text-ink-500">
             Одна таблица вместо {hybrids.length * REGIONS.length} карточек: строка — гибрид, колонка — регион, в посевных единицах.
           </p>
@@ -59,7 +59,7 @@ export default function StepRegions() {
                     />
                   </td>
                 ))}
-                <td className="num px-5 py-2 text-right font-extrabold text-leaf-800">{fmt(regionTotal(state, h.id))}</td>
+                <td className="num px-5 py-2 text-right font-extrabold text-ink-900">{fmt(regionTotal(state, h.id))}</td>
               </tr>
             ))}
           </tbody>
@@ -74,7 +74,7 @@ export default function StepRegions() {
                   </td>
                 )
               })}
-              <td className="num px-5 py-3 text-right text-base font-extrabold text-leaf-900">{fmt(grand)}</td>
+              <td className="num px-5 py-3 text-right text-base font-extrabold text-brand-600">{fmt(grand)}</td>
             </tr>
           </tfoot>
         </table>
