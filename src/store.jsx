@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useReducer } from 'react'
-import { initialState, HYBRIDS, REGIONS, TPS, FARMS } from './data/seed.js'
+import { initialState, emptyState, HYBRIDS, REGIONS, TPS, FARMS } from './data/seed.js'
 
 const KEY = 'lgate-planning-v1'
 
@@ -112,6 +112,8 @@ function reducer(state, a) {
 
     case 'reset':
       return initialState
+    case 'clear':
+      return emptyState
     default:
       return state
   }

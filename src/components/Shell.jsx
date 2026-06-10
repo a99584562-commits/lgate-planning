@@ -45,13 +45,25 @@ export default function Shell({ children }) {
             </div>
           </div>
 
-          <button
-            onClick={() => dispatch({ type: 'reset' })}
-            className="rounded-lg px-3 py-1.5 text-xs font-medium text-ink-400 hover:bg-stone-50 hover:text-ink-700"
-            title="Вернуть демо-данные к исходным"
-          >
-            Сбросить демо
-          </button>
+          <div className="flex items-center overflow-hidden rounded-lg border border-line">
+            <button
+              onClick={() => dispatch({ type: 'reset' })}
+              className="px-3 py-1.5 text-xs font-medium text-ink-500 hover:bg-stone-50 hover:text-ink-700"
+              title="Вернуть заполненный демо-пример (все стадии)"
+            >
+              Демо-пример
+            </button>
+            <button
+              onClick={() => {
+                if (confirm('Очистить все планы и пройти процесс с нуля? Демо-пример можно вернуть кнопкой рядом.'))
+                  dispatch({ type: 'clear' })
+              }}
+              className="border-l border-line px-3 py-1.5 text-xs font-semibold text-leaf-700 hover:bg-leaf-50"
+              title="Пустое состояние — прогнать каскад с шага 1"
+            >
+              Чистый старт
+            </button>
+          </div>
 
           <label className="flex items-center gap-2 rounded-xl border border-line bg-paper px-3 py-2">
             <span className="text-xs text-ink-500">Роль</span>

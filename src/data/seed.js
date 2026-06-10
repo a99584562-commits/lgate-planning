@@ -149,3 +149,18 @@ export const initialState = {
   },
   deals: DEALS,
 }
+
+// Пустое состояние — чистый прогон каскада с шага 1.
+// Выбран КД, ничего не выбрано/не заполнено, все статусы — черновик.
+export const emptyState = {
+  role: 'cd',
+  step: 'hybrids',
+  hybridSelection: { selected: [], status: 'draft' },
+  regionPlans: { values: {}, status: 'draft' },
+  tpPlans: {
+    values: {},
+    status: REGIONS.reduce((a, r) => ({ ...a, [r.id]: 'draft' }), {}),
+  },
+  farms: { selection: {}, values: {}, status: {} },
+  deals: [],
+}
