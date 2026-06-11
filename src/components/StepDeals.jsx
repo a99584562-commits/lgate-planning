@@ -60,7 +60,7 @@ export default function StepDeals() {
                 return (
                   <tr key={d.id} className={i % 2 ? 'bg-paper/60' : ''}>
                     <td className="px-5 py-2.5 font-semibold text-ink-700">
-                      {`${hybrid.name} / ${farm.name.replace(/[«»]/g, '')} / FY2026`}
+                      {`${hybrid.name} / ${farm.name.replace(/[«»]/g, '')} / ${state.fy}`}
                     </td>
                     <td className="px-3 py-2.5">{farm.name}</td>
                     <td className="px-3 py-2.5 font-bold">{hybrid.name}</td>

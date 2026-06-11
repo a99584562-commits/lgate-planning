@@ -1,7 +1,11 @@
 import { createContext, useContext, useEffect, useReducer } from 'react'
-import { initialState, emptyState, HYBRIDS, REGIONS, TPS, FARMS } from './data/seed.js'
+import { initialState, emptyYear, HYBRIDS, REGIONS, TPS, FARMS } from './data/seed.js'
 
-const KEY = 'lgate-planning-v1'
+const KEY = 'lgate-planning-v2'
+
+// поля данных планирования, которые свопаются при смене финансового года
+const YEAR_FIELDS = ['hybridSelection', 'regionPlans', 'tpPlans', 'farms', 'deals']
+const pickYear = (s) => YEAR_FIELDS.reduce((a, k) => ({ ...a, [k]: s[k] }), {})
 
 const Ctx = createContext(null)
 
@@ -110,10 +114,20 @@ function reducer(state, a) {
       return { ...state, farms: { ...state.farms, status }, deals }
     }
 
+    case 'setFy': {
+      // выгружаем текущий год в архив, загружаем выбранный (или пустой)
+      if (a.fy === state.fy) return state
+      const archive = { ...state.archive, [state.fy]: pickYear(state) }
+      const next = archive[a.fy] || emptyYear()
+      delete archive[a.fy]
+      return { ...state, fy: a.fy, archive, ...next }
+    }
+
     case 'reset':
       return initialState
     case 'clear':
-      return emptyState
+      // очищаем только текущий год; роль, выбранный FY и другие годы сохраняются
+      return { ...state, step: 'hybrids', ...emptyYear() }
     default:
       return state
   }

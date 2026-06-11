@@ -1,7 +1,8 @@
 // Справочники демо. Гибриды и регионы — как на портале клиента,
 // сотрудники и хозяйства — вымышленные.
 
-export const FY = 'FY2026'
+export const FY = 'FY2026' // финансовый год по умолчанию
+export const FYS = ['FY2025', 'FY2026', 'FY2027']
 
 export const CULTURES = [
   { id: 'corn', name: 'Кукуруза' },
@@ -133,9 +134,9 @@ const DEALS = [
   { id: 'd8', farm: 'f6', tp: 'nevzorov', hybrid: 'alexander', plan: 300 },
 ]
 
-export const initialState = {
-  role: 'cd',
-  step: 'regions',
+// Данные планирования одного года. На верхнем уровне state лежит активный год,
+// остальные — в state.archive (свопаются при смене FY).
+const DEMO_YEAR = {
   hybridSelection: { selected: SELECTED_HYBRIDS, status: 'approved' },
   regionPlans: { values: REGION_PLANS, status: 'approved' },
   tpPlans: {
@@ -150,17 +151,22 @@ export const initialState = {
   deals: DEALS,
 }
 
-// Пустое состояние — чистый прогон каскада с шага 1.
-// Выбран КД, ничего не выбрано/не заполнено, все статусы — черновик.
-export const emptyState = {
+// Пустой год — чистый прогон каскада с шага 1, все статусы черновик.
+export function emptyYear() {
+  return {
+    hybridSelection: { selected: [], status: 'draft' },
+    regionPlans: { values: {}, status: 'draft' },
+    tpPlans: { values: {}, status: REGIONS.reduce((a, r) => ({ ...a, [r.id]: 'draft' }), {}) },
+    farms: { selection: {}, values: {}, status: {} },
+    deals: [],
+  }
+}
+
+export const initialState = {
   role: 'cd',
-  step: 'hybrids',
-  hybridSelection: { selected: [], status: 'draft' },
-  regionPlans: { values: {}, status: 'draft' },
-  tpPlans: {
-    values: {},
-    status: REGIONS.reduce((a, r) => ({ ...a, [r.id]: 'draft' }), {}),
-  },
-  farms: { selection: {}, values: {}, status: {} },
-  deals: [],
+  step: 'regions',
+  fy: 'FY2026',
+  ...DEMO_YEAR,
+  // остальные годы — пустые, ждут планирования
+  archive: { FY2025: emptyYear(), FY2027: emptyYear() },
 }

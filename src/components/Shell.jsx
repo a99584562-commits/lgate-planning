@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useStore, regionsAwaiting, tpsAwaiting } from '../store.jsx'
-import { FY, ROLES } from '../data/seed.js'
+import { FYS, ROLES } from '../data/seed.js'
 import { Check, CountBadge } from './ui.jsx'
 import BrandMark from './BrandMark.jsx'
 import Guide from './Guide.jsx'
@@ -51,9 +51,7 @@ export default function Shell({ children }) {
             <div className="font-display text-[17px] font-semibold uppercase leading-tight tracking-tight">
               Планирование продаж
             </div>
-            <div className="text-xs text-ink-500">
-              финансовый год <span className="num font-semibold text-ink-700">{FY}</span> · демо
-            </div>
+            <div className="text-xs text-ink-500">интерактивное демо · Битрикс24</div>
           </div>
 
           <button
@@ -88,6 +86,22 @@ export default function Shell({ children }) {
               Чистый старт
             </button>
           </div>
+
+          <label className="flex items-center gap-2 rounded-xl border border-line bg-paper px-3 py-2">
+            <span className="text-xs text-ink-500">Год</span>
+            <select
+              value={state.fy}
+              onChange={(e) => dispatch({ type: 'setFy', fy: e.target.value })}
+              className="num bg-transparent text-sm font-semibold text-ink-900 focus:outline-none"
+              title="Финансовый год планирования"
+            >
+              {FYS.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
+          </label>
 
           <label className="flex items-center gap-2 rounded-xl border border-line bg-paper px-3 py-2">
             <span className="text-xs text-ink-500">Роль</span>
