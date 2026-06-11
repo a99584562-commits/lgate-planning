@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { useStore, regionsAwaiting, tpsAwaiting } from '../store.jsx'
 import { FY, ROLES } from '../data/seed.js'
 import { Check, CountBadge } from './ui.jsx'
 import BrandMark from './BrandMark.jsx'
+import Guide from './Guide.jsx'
 
 const STEPS = [
   { id: 'hybrids', n: 1, label: 'Гибриды' },
@@ -29,6 +31,7 @@ export function roleSteps(roleId) {
 
 export default function Shell({ children }) {
   const { state, dispatch } = useStore()
+  const [guide, setGuide] = useState(false)
   const allowed = roleSteps(state.role)
   const role = ROLES.find((r) => r.id === state.role)
   // КД — согласующий: показываем, сколько регионов/ТП ждёт его прямо на навигации
@@ -37,6 +40,7 @@ export default function Shell({ children }) {
 
   return (
     <div className="min-h-screen pb-20">
+      {guide && <Guide onClose={() => setGuide(false)} />}
       <div className="h-1 bg-brand-500" />
       <header className="border-b border-line bg-white">
         <div className="mx-auto flex max-w-6xl items-center gap-4 px-6 py-4">
@@ -51,6 +55,19 @@ export default function Shell({ children }) {
               финансовый год <span className="num font-semibold text-ink-700">{FY}</span> · демо
             </div>
           </div>
+
+          <button
+            onClick={() => setGuide(true)}
+            className="flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-ink-700 hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
+            title="Как устроено и как пользоваться"
+          >
+            <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none">
+              <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.6" />
+              <path d="M7.6 7.6a2.4 2.4 0 1 1 3.2 2.26c-.5.2-.8.66-.8 1.19v.45" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              <circle cx="10" cy="14.4" r="0.9" fill="currentColor" />
+            </svg>
+            Инструкция
+          </button>
 
           <div className="flex items-center overflow-hidden rounded-lg border border-line">
             <button
